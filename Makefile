@@ -100,6 +100,8 @@ xv6memfs.img: bootblock kernelmemfs
 	dd if=bootblock of=xv6memfs.img conv=notrunc
 	dd if=kernelmemfs of=xv6memfs.img seek=1 conv=notrunc
 
+# MEMO: bootblock = boot loader??
+# bootasm.Sとbootmain.cからbootloader的なものを作成している
 bootblock: bootasm.S bootmain.c
 	$(CC) $(CFLAGS) -fno-pic -O -nostdinc -I. -c bootmain.c
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c bootasm.S
@@ -156,6 +158,7 @@ _forktest: forktest.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _forktest forktest.o ulib.o usys.o
 	$(OBJDUMP) -S _forktest > forktest.asm
 
+# MEMO: mkfsを自作している..?!
 mkfs: mkfs.c fs.h
 	gcc -Werror -Wall -o mkfs mkfs.c
 
@@ -219,6 +222,11 @@ QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
 ifndef CPUS
 CPUS := 2
 endif
+# MEMO: 
+# ref: http://www.tin.org/bin/man.cgi?section=1&topic=qemu-system-i386
+# -drive file=... で、ファイルをブロックデバイスと認識して起動してくれる.
+# -drive optionは複数かける
+# 今回の場合だと、bootblockやkernelを内包してるxv6のimageと、os中で使用する実行ファイル群のfsのimageの2つをドライブに指定している.
 QEMUOPTS = -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0,media=disk,format=raw -smp $(CPUS) -m 512 $(QEMUEXTRA)
 
 qemu: fs.img xv6.img
