@@ -80,6 +80,7 @@ CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb 
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 ASFLAGS = -m32 -gdwarf-2 -Wa,-divide
 # FreeBSD ld wants ``elf_i386_fbsd''
+# MEMO: -m options https://linux.die.net/man/1/ld
 LDFLAGS += -m $(shell $(LD) -V | grep elf_i386 2>/dev/null | head -n 1)
 
 # Disable PIE when possible (for Ubuntu 16.10 toolchain)
@@ -102,6 +103,7 @@ xv6memfs.img: bootblock kernelmemfs
 
 # MEMO: bootblock = boot loader??
 # bootasm.Sとbootmain.cからbootloader的なものを作成している
+# ldでbootasm.Sのstartをエントリにしている.
 bootblock: bootasm.S bootmain.c
 	$(CC) $(CFLAGS) -fno-pic -O -nostdinc -I. -c bootmain.c
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c bootasm.S
@@ -122,6 +124,7 @@ initcode: initcode.S
 	$(OBJCOPY) -S -O binary initcode.out initcode
 	$(OBJDUMP) -S initcode.o > initcode.asm
 
+# MEMO: main.cはkernel, bootblockがbootloader
 kernel: $(OBJS) entry.o entryother initcode kernel.ld
 	$(LD) $(LDFLAGS) -T kernel.ld -o kernel entry.o $(OBJS) -b binary initcode entryother
 	$(OBJDUMP) -S kernel > kernel.asm
