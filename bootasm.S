@@ -7,12 +7,15 @@
 # memory at physical address 0x7c00 and starts executing in real mode
 # with %cs=0 %ip=7c00.
 
-.code16                       # Assemble for 16-bit mode
+# 16bit mode -> ref: https://ftp.gnu.org/old-gnu/Manuals/gas-2.9.1/html_node/as_203.html
+.code16                       # Assemble for 16-bit
 .globl start
 start:
   cli                         # BIOS enabled interrupts; disable
 
   # Zero data segment registers DS, ES, and SS.
+  # MEMO: 16bit modeなので、演算にも16bitレジスタを使用する.
+  # MEMO: instructionも16bit用のinstruction(movwなど).
   xorw    %ax,%ax             # Set %ax to zero
   movw    %ax,%ds             # -> Data Segment
   movw    %ax,%es             # -> Extra Segment
@@ -20,6 +23,7 @@ start:
 
   # Physical address line A20 is tied to zero so that the first PCs 
   # with 2 MB would run software that assumed 1 MB.  Undo that.
+  # ref: https://cstmize.hatenablog.jp/entry/2019/06/11/A20_gate%E3%81%A8keyboard_controller%E3%81%A8%E3%81%AE%E3%82%84%E3%82%8A%E3%81%A8%E3%82%8A%28xv6%E3%82%92%E4%BE%8B%E3%81%AB%E3%81%97%E3%81%A6%29
 seta20.1:
   inb     $0x64,%al               # Wait for not busy
   testb   $0x2,%al
@@ -62,6 +66,7 @@ start32:
   movw    %ax, %gs                # -> GS
 
   # Set up the stack pointer and call into C.
+  # MEMO: startからの領域(startより小さいaddressの領域)をstackに使う(なんでここなのかは謎.)
   movl    $start, %esp
   call    bootmain
 

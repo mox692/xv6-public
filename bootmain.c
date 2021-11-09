@@ -22,9 +22,12 @@ bootmain(void)
   void (*entry)(void);
   uchar* pa;
 
+  // MEMO: kernelのload先っぽい、ここの0x10000も決め打ち？
   elf = (struct elfhdr*)0x10000;  // scratch space
 
   // Read 1st page off disk
+  // MEMO: (uchar*)elfが指すpointerからoffset 0の位置へ、
+  // 4096byte分kernelをloadする.
   readseg((uchar*)elf, 4096, 0);
 
   // Is this an ELF executable?
@@ -32,10 +35,21 @@ bootmain(void)
     return;  // let bootasm.S handle error
 
   // Load each program segment (ignores ph flags).
+  // MEMO: program header tableのはじめのエントリ.
   ph = (struct proghdr*)((uchar*)elf + elf->phoff);
+  // MEMO: table のエントリ数
   eph = ph + elf->phnum;
+  // MEMO: 「ph++」で、「struct proghdr*」型をincrementしてるっぽいけど、
+  // これはsizeof(struct proghdr*)分だけincrementされる.
   for(; ph < eph; ph++){
     pa = (uchar*)ph->paddr;
+    // MEMO: 
+    // pa -> 定義的には、The segment's physical address for systems in which physical addressing is relevant.
+    //       Because the system ignores physical addressing for application programs,
+    //       this member has unspecified contents for executable files and shared objects.
+    //       となってるが、今回のcaseではこのfieldには意味がありそう.
+    //       恐らく、リンカスクリプトとかでこの辺りのセグメントのアドレスを管理していそう??
+    // ph -> これはelfの先頭からのoffset.
     readseg(pa, ph->filesz, ph->off);
     if(ph->memsz > ph->filesz)
       stosb(pa + ph->filesz, 0, ph->memsz - ph->filesz);
@@ -43,6 +57,7 @@ bootmain(void)
 
   // Call the entry point from the ELF header.
   // Does not return!
+  // MEMO: 上のloopでkernelのloadは完了しており、そこのentryにとぶ.
   entry = (void(*)(void))(elf->entry);
   entry();
 }
@@ -79,7 +94,7 @@ void
 readseg(uchar* pa, uint count, uint offset)
 {
   uchar* epa;
-
+  // MEMO: end of physical address.
   epa = pa + count;
 
   // Round down to sector boundary.
