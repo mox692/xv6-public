@@ -17,6 +17,8 @@ struct run {
   struct run *next;
 };
 
+// MEMO: kinit1終了時点では、freelistに各pageの先頭addrが
+//       freelistになって入ってる.
 struct {
   struct spinlock lock;
   int use_lock;
@@ -43,6 +45,7 @@ kinit2(void *vstart, void *vend)
   kmem.use_lock = 1;
 }
 
+// MEMO: vstartからpage sizeごとにkfreeを呼ぶ
 void
 freerange(void *vstart, void *vend)
 {
@@ -56,6 +59,7 @@ freerange(void *vstart, void *vend)
 // which normally should have been returned by a
 // call to kalloc().  (The exception is when
 // initializing the allocator; see kinit above.)
+// MEMO:　vで指定された物理ページをfree(1で埋める)する.
 void
 kfree(char *v)
 {
@@ -67,6 +71,7 @@ kfree(char *v)
   // Fill with junk to catch dangling refs.
   memset(v, 1, PGSIZE);
 
+  // MEMO: lockを使用するかしないかを呼び出し元で選択できる設計にしてるのか...
   if(kmem.use_lock)
     acquire(&kmem.lock);
   r = (struct run*)v;

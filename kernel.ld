@@ -1,3 +1,9 @@
+/* 
+MEMO: 
+·bootmain.cでは、最終的にkernelのentry()に飛んでいた
+·このlinker scriptではkernelのエントリやそのほかのelfの配置を定義してる
+*/
+
 /* Simple linker script for the JOS kernel.
    See the GNU ld 'info' manual ("info ld") to learn the syntax. */
 
@@ -9,6 +15,7 @@ SECTIONS
 {
 	/* Link the kernel at this address: "." means the current address */
         /* Must be equal to KERNLINK */
+	/* このLinker Scriptではpaging有効後のvaddrでアドレスを記述してるみたい.*/
 	. = 0x80100000;
 
 	.text : AT(0x100000) {

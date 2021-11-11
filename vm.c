@@ -102,6 +102,8 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
 
 // This table defines the kernel's mappings, which are present in
 // every process's page table.
+// MEMO: kernelの「page directory」の定義.
+// MEMO: vaddrとpaddrの対応も、行ってしまえばここで定義されている？？
 static struct kmap {
   void *virt;
   uint phys_start;
@@ -115,6 +117,9 @@ static struct kmap {
 };
 
 // Set up kernel part of a page table.
+// MEMO: 4096byteの領域を確保して、そこをpgdirとして使用する.
+//       またxv6のpagedirの仕様(kmap)の仕様に従ってptentも作成している.
+// MEMO: 割り当てに失敗 -> ret 0; 成功 -> 作成したpgdir.
 pde_t*
 setupkvm(void)
 {
@@ -126,7 +131,9 @@ setupkvm(void)
   memset(pgdir, 0, PGSIZE);
   if (P2V(PHYSTOP) > (void*)DEVSPACE)
     panic("PHYSTOP too high");
+  // MEMO: page dirのloop
   for(k = kmap; k < &kmap[NELEM(kmap)]; k++)
+    // MEMO: page tableを作成
     if(mappages(pgdir, k->virt, k->phys_end - k->phys_start,
                 (uint)k->phys_start, k->perm) < 0) {
       freevm(pgdir);

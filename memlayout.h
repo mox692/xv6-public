@@ -8,6 +8,8 @@
 #define KERNBASE 0x80000000         // First kernel virtual address
 #define KERNLINK (KERNBASE+EXTMEM)  // Address where kernel is linked
 
+// MEMO: (paging有効後は、)vaddrはpaddrに0x8000000を足した
+//       仮想アドレスになる.
 #define V2P(a) (((uint) (a)) - KERNBASE)
 #define P2V(a) ((void *)(((char *) (a)) + KERNBASE))
 
