@@ -88,6 +88,12 @@ mpconfig(struct mp **pmp)
   return conf;
 }
 
+// MEMO: mpってmultiple processor ってことっぽい.
+// 
+// Since most newer machines support Advanced Configuration and Power Interface (ACPI) 
+// which subsumes the MPS functionality,MPS has for the most part been supplanted by ACPI.
+// MPS can still be useful on machines or with operating systems that do not support ACPI.
+// って感じで今ではACPIにwrapされてるみたい.
 void
 mpinit(void)
 {
@@ -98,15 +104,23 @@ mpinit(void)
   struct mpproc *proc;
   struct mpioapic *ioapic;
 
+  // mpのconfigを取得
   if((conf = mpconfig(&mp)) == 0)
     panic("Expect to run on an SMP");
   ismp = 1;
+  // MEMO: local apicはcpuごとに存在するので、ここで取得できる。
+  // ref; https://mmi.hatenablog.com/entry/2017/03/27/202656
   lapic = (uint*)conf->lapicaddr;
+  // MEMO: なんで(conf + 1)で読んでるのだろう？
+  // 
   for(p=(uchar*)(conf+1), e=(uchar*)conf+conf->length; p<e; ){
     switch(*p){
     case MPPROC:
       proc = (struct mpproc*)p;
+      // MAX以下だったら
       if(ncpu < NCPU) {
+        // MEMO: ここでprocessorを追加してるみたい.
+        // MEMO: https://www.wdic.org/w/SCI/APIC
         cpus[ncpu].apicid = proc->apicid;  // apicid may differ from ncpu
         ncpu++;
       }

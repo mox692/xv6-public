@@ -12,6 +12,11 @@
 #include "proc.h"
 #include "x86.h"
 
+// spec: https://www.ti.com/lit/ug/sprugp1/sprugp1.pdf?ts=1637682393247&ref_url=https%253A%252F%252Fwww.google.com%252F#:~:text=The%20UART%20includes%20a%20programmable,internal%20transmitter%20and%20receiver%20logic.
+
+// Ref: https://cstmize.hatenablog.jp/entry/2019/06/15/keyboard%2C_UART%2C_VGA%E3%81%AE%E5%88%9D%E6%9C%9F%E5%8C%96%28xv6%E3%82%92%E4%BE%8B%E3%81%AB%29
+// MEMO: https://en.wikipedia.org/wiki/COM_(hardware_interface)#:~:text=I/O-,addresses,-%5Bedit%5D
+// http://209.68.14.80/ref/mbsys/res/irq/numIRQ4-c.html によると、serial = IRQ4 ?
 #define COM1    0x3f8
 
 static int uart;    // is there a uart?
@@ -21,6 +26,8 @@ uartinit(void)
 {
   char *p;
 
+  // TODO: ここの +xx って値が何を示しているのか.
+  // MEMO: intの文脈でのfifo https://www.tij.co.jp/jp/lit/ds/symlink/tl16c750e.pdf?ts=1637683228963&ref_url=https%253A%252F%252Fwww.google.com%252F
   // Turn off the FIFO
   outb(COM1+2, 0);
 

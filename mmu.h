@@ -40,6 +40,7 @@ struct segdesc {
 };
 
 // Normal segment
+// TODO: read
 #define SEG(type, base, lim, dpl) (struct segdesc)    \
 { ((lim) >> 12) & 0xffff, (uint)(base) & 0xffff,      \
   ((uint)(base) >> 16) & 0xff, type, 1, dpl, 1,       \

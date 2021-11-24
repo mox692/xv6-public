@@ -19,12 +19,17 @@ main(void)
 {
   kinit1(end, P2V(4*1024*1024)); // phys page allocator
   kvmalloc();      // kernel page table
+  // Multi processor設定
   mpinit();        // detect other processors
+  // Local APIC の初期化
   lapicinit();     // interrupt controller
   seginit();       // segment descriptors
+  // PICの初期化
   picinit();       // disable pic
   ioapicinit();    // another interrupt controller
+  // console(uartを使用した) を使えるように？
   consoleinit();   // console hardware
+
   uartinit();      // serial port
   pinit();         // process table
   tvinit();        // trap vectors

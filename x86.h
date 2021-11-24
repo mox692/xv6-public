@@ -67,7 +67,7 @@ lgdt(struct segdesc *p, int size)
   pd[0] = size-1;
   pd[1] = (uint)p;
   pd[2] = (uint)p >> 16;
-
+  // MEMO: dp[0]をlgdtに入れているのは？？
   asm volatile("lgdt (%0)" : : "r" (pd));
 }
 

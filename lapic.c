@@ -11,6 +11,10 @@
 #include "x86.h"
 
 // Local APIC registers, divided by 4 for use as uint[] indices.
+// ref: https://wiki.osdev.org/APIC#:~:text=Local%20APIC-,registers,-The%20local%20APIC
+// spec: https://www.naic.edu/~phil/software/intel/318148.pdf
+// MEMO: これらは全てlapic(MPから取得される)からのoffset.
+// MEMO: また、lapic[int] の配列として定義してるので、offsetを/4している.
 #define ID      (0x0020/4)   // ID
 #define VER     (0x0030/4)   // Version
 #define TPR     (0x0080/4)   // Task Priority
@@ -44,6 +48,7 @@
 volatile uint *lapic;  // Initialized in mp.c
 
 //PAGEBREAK!
+// MEMO: lapicにwriteする(mp.hでlapicaddrとして定義されている.)
 static void
 lapicw(int index, int value)
 {
@@ -94,6 +99,7 @@ lapicinit(void)
     ;
 
   // Enable interrupts on the APIC (but not on the processor).
+  // MEMO: https://www.slideshare.net/syuu1228/interrupts-on-xv6-14143405
   lapicw(TPR, 0);
 }
 

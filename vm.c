@@ -22,6 +22,9 @@ seginit(void)
   // because it would have to have DPL_USR, but the CPU forbids
   // an interrupt from CPL=0 to DPL=3.
   c = &cpus[cpuid()];
+  // MEMO: mikan本参照.
+  // gdtの各エントリを設定してる
+  // TODO: read.
   c->gdt[SEG_KCODE] = SEG(STA_X|STA_R, 0, 0xffffffff, 0);
   c->gdt[SEG_KDATA] = SEG(STA_W, 0, 0xffffffff, 0);
   c->gdt[SEG_UCODE] = SEG(STA_X|STA_R, 0, 0xffffffff, DPL_USER);
@@ -156,6 +159,7 @@ kvmalloc(void)
 void
 switchkvm(void)
 {
+  // MEMO: cr3レジスタにsetupkvm()で確保した領域の先頭アドレスを入れる.
   lcr3(V2P(kpgdir));   // switch to the kernel page table
 }
 

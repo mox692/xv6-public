@@ -11,6 +11,7 @@ struct mp {             // floating pointer
   uchar reserved[3];
 };
 
+// TODO: 仕様書を調べてみる.
 struct mpconf {         // configuration table header
   uchar signature[4];           // "PCMP"
   ushort length;                // total table length
