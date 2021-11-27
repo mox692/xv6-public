@@ -20,7 +20,9 @@ tvinit(void)
   int i;
 
   for(i = 0; i < 256; i++)
+    // MEMO: ここのIDTはos自作と同じ仕様かな?
     SETGATE(idt[i], 0, SEG_KCODE<<3, vectors[i], 0);
+  // MEMO: syscallだけは、user modeのtrapとして定義する.
   SETGATE(idt[T_SYSCALL], 1, SEG_KCODE<<3, vectors[T_SYSCALL], DPL_USER);
 
   initlock(&tickslock, "time");

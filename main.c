@@ -29,7 +29,6 @@ main(void)
   ioapicinit();    // another interrupt controller
   // console(uartを使用した) を使えるように？
   consoleinit();   // console hardware
-
   uartinit();      // serial port
   pinit();         // process table
   tvinit();        // trap vectors

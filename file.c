@@ -10,6 +10,7 @@
 #include "sleeplock.h"
 #include "file.h"
 
+// MEMO: 外部deviceのこと？例えばconsoleがindex:1として登録されている.
 struct devsw devsw[NDEV];
 struct {
   struct spinlock lock;

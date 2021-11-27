@@ -18,6 +18,8 @@
 // * B_DIRTY: the buffer data has been modified
 //     and needs to be written to disk.
 
+// MEMO: このbuffer cacheがどういう用途に使用されるのか、今のところ検討つかない
+
 #include "types.h"
 #include "defs.h"
 #include "param.h"

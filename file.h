@@ -25,6 +25,7 @@ struct inode {
   uint addrs[NDIRECT+1];
 };
 
+// MEMO: それぞれのdeviceを表す.readとwriteというinterfaceを持ってる.
 // table mapping major device number to
 // device functions
 struct devsw {

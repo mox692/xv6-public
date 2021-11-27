@@ -7,6 +7,7 @@
 #include "proc.h"
 #include "spinlock.h"
 
+// MEMO: processを管理するtable.
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];

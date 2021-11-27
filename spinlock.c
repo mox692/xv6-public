@@ -9,6 +9,7 @@
 #include "proc.h"
 #include "spinlock.h"
 
+// MEMO: lockの初期化(lockを実際に獲得しているわけではない.)
 void
 initlock(struct spinlock *lk, char *name)
 {

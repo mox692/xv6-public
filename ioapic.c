@@ -10,6 +10,7 @@
 
 #define REG_ID     0x00  // Register index: ID
 #define REG_VER    0x01  // Register index: version
+// MEMO: https://pdos.csail.mit.edu/6.828/2016/readings/ia32/ioapic.pdf の IOREDTBL[23:0]—I/O REDIRECTION TABLE REGISTERS を参照
 #define REG_TABLE  0x10  // Redirection table base
 
 // The redirection table starts at REG_TABLE and uses
@@ -38,6 +39,7 @@ ioapicread(int reg)
   return ioapic->data;
 }
 
+// MEMO: 
 static void
 ioapicwrite(int reg, uint data)
 {
@@ -51,6 +53,8 @@ ioapicinit(void)
   int i, id, maxintr;
 
   ioapic = (volatile struct ioapic*)IOAPIC;
+  // MEMO: versionのindex(0x01)の、16~24bit中に恐らくmax接続数が保存されてる.
+  // MEMO: https://pdos.csail.mit.edu/6.828/2016/readings/ia32/ioapic.pdf の3.2.2. IOAPICVER—IOAPIC VERSION REGISTE に書いてあった.
   maxintr = (ioapicread(REG_VER) >> 16) & 0xFF;
   id = ioapicread(REG_ID) >> 24;
   if(id != ioapicid)
@@ -58,9 +62,10 @@ ioapicinit(void)
 
   // Mark all interrupts edge-triggered, active high, disabled,
   // and not routed to any CPUs.
-  // MEMO: 謎
+  // MEMO: redirect tableに関しては https://pdos.csail.mit.edu/6.828/2016/readings/ia32/ioapic.pdf 
+  //       の IOREDTBL[24:0]—I/O REDIRECTION TABLE REGISTERS にある.
   for(i = 0; i <= maxintr; i++){
-    ioapicwrite(REG_TABLE+2*i, INT_DISABLED | (T_IRQ0 + i));
+    ioapicwrite(REG_TABLE+1*i, INT_DISABLED | (T_IRQ0 + i));
     ioapicwrite(REG_TABLE+2*i+1, 0);
   }
 }

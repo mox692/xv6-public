@@ -13,6 +13,7 @@
 // Local APIC registers, divided by 4 for use as uint[] indices.
 // ref: https://wiki.osdev.org/APIC#:~:text=Local%20APIC-,registers,-The%20local%20APIC
 // spec: https://www.naic.edu/~phil/software/intel/318148.pdf
+// ref: local vector tableに関して　https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol3/o_fe12b1e2a880e0ce-374.html
 // MEMO: これらは全てlapic(MPから取得される)からのoffset.
 // MEMO: また、lapic[int] の配列として定義してるので、offsetを/4している.
 #define ID      (0x0020/4)   // ID
@@ -30,11 +31,11 @@
   #define DEASSERT   0x00000000
   #define LEVEL      0x00008000   // Level triggered
   #define BCAST      0x00080000   // Send to all APICs, including self.
-  #define BUSY       0x00001000
+  #define BUSY       0x00001000   
   #define FIXED      0x00000000
 #define ICRHI   (0x0310/4)   // Interrupt Command [63:32]
 #define TIMER   (0x0320/4)   // Local Vector Table 0 (TIMER)
-  #define X1         0x0000000B   // divide counts by 1
+  #define X1         0x0000000B   // divide counts by 1 MEMO: ここっぽい！ https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol3/o_fe12b1e2a880e0ce-378.html ??
   #define PERIODIC   0x00020000   // Periodic
 #define PCINT   (0x0340/4)   // Performance Counter LVT
 #define LINT0   (0x0350/4)   // Local Vector Table 1 (LINT0)
@@ -70,6 +71,8 @@ lapicinit(void)
   // If xv6 cared more about precise timekeeping,
   // TICR would be calibrated using an external time source.
   lapicw(TDCR, X1);
+  // ref: https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol3/o_fe12b1e2a880e0ce-375.html
+  //  Local Vector Table 0(timer)を定期動作させるように定義
   lapicw(TIMER, PERIODIC | (T_IRQ0 + IRQ_TIMER));
   lapicw(TICR, 10000000);
 
@@ -83,6 +86,7 @@ lapicinit(void)
     lapicw(PCINT, MASKED);
 
   // Map error interrupt to IRQ_ERROR.
+  // MEMO: LVT Error Registerの0-8bitにになんかの値を入れてるっぽいんだけど、何を入れてるかまでは。。
   lapicw(ERROR, T_IRQ0 + IRQ_ERROR);
 
   // Clear error status register (requires back-to-back writes).
