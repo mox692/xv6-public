@@ -9,6 +9,7 @@
 #include "spinlock.h"
 
 // Interrupt descriptor table (shared by all CPUs).
+// MEMO: エントリのセットはtvinitで行うが、lidt自体はmpinit()内で行う.
 struct gatedesc idt[256];
 extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
@@ -19,8 +20,8 @@ tvinit(void)
 {
   int i;
 
+  // MEMO: syscallのvec番号は64ってことになってるが、ここいじれば自由に変更できそう？
   for(i = 0; i < 256; i++)
-    // MEMO: ここのIDTはos自作と同じ仕様かな?
     SETGATE(idt[i], 0, SEG_KCODE<<3, vectors[i], 0);
   // MEMO: syscallだけは、user modeのtrapとして定義する.
   SETGATE(idt[T_SYSCALL], 1, SEG_KCODE<<3, vectors[T_SYSCALL], DPL_USER);
@@ -35,9 +36,11 @@ idtinit(void)
 }
 
 //PAGEBREAK: 41
+// MEMO: syscallのtrap、そのほかの例外も、割り込み系は全て一旦ここに処理が飛んでくる.
 void
 trap(struct trapframe *tf)
 {
+  // MEMO: syscallのtrap処理
   if(tf->trapno == T_SYSCALL){
     if(myproc()->killed)
       exit();
@@ -48,6 +51,7 @@ trap(struct trapframe *tf)
     return;
   }
 
+  // MEMO: syscall以外のtrap処理
   switch(tf->trapno){
   case T_IRQ0 + IRQ_TIMER:
     if(cpuid() == 0){

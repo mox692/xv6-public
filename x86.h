@@ -147,6 +147,7 @@ lcr3(uint val)
 //PAGEBREAK: 36
 // Layout of the trap frame built on the stack by the
 // hardware and by trapasm.S, and passed to trap().
+// MEMO: 割り込みの時にstackに退避されるデータ構造？
 struct trapframe {
   // registers as pushed by pusha
   uint edi;

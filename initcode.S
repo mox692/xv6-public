@@ -12,6 +12,7 @@ start:
   pushl $init
   pushl $0  // where caller pc would be
   movl $SYS_exec, %eax
+  # trap.h, trap.c(idtのsyscallのエントリをセットしてる.) を参照.
   int $T_SYSCALL
 
 # for(;;) exit();

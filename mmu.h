@@ -146,6 +146,7 @@ struct taskstate {
 };
 
 // Gate descriptors for interrupts and traps
+// ref: https://wiki.osdev.org/Interrupt_Descriptor_Table のIA32のところ.
 struct gatedesc {
   uint off_15_0 : 16;   // low 16 bits of offset in segment
   uint cs : 16;         // code segment selector
@@ -167,6 +168,7 @@ struct gatedesc {
 // - dpl: Descriptor Privilege Level -
 //        the privilege level required for software to invoke
 //        this interrupt/trap gate explicitly using an int instruction.
+// MEMO: ここのIDTはos自作と同じ仕様かな?
 #define SETGATE(gate, istrap, sel, off, d)                \
 {                                                         \
   (gate).off_15_0 = (uint)(off) & 0xffff;                \

@@ -43,8 +43,30 @@
     * というか前提知識がなさすぎて
     * 
 
+* 11/28
+  * userinitでuser procが生成される処理をみて行った.
+    * initcode.S
+    * int T_SYSCALL -> trap.cで定義されたvectors[]の各エントリに飛ぶ
+    * vectors.Sはvectors.plから生成されてて、これはtrapasm.Sのalltrapsを読んでいる
+    * alltrapsはtrap()を呼ぶ
+    * trap.cは各割り込みの種類に応じて、処理を行う.
+  * 残る疑問
+    * trapから帰ってくる時の処理は？
+      * syscall()してから、戻ってくる処理がパッとみ見当たらない
+  * 参考
+    * https://www.utam0k.jp/blog/2019/07/08/xv6_traps_interrupts_drivers_1/
+
+* 11/29
+  * bufferは何に使うん？
+  * initでlockをとりあえずとるだけ、みたいなのが多いけど、これは何？
+  * spinlock.cのaquire , releaeseも関係してるのかも.
+
 
 ### 参考文献
 * boot, pagingの設定(main.cのはじめあたり)
   * https://yohei.codes/ja/post/xv6-memory-2/
   * 
+
+### 起動
+* make -> make qemu
+* 停止は

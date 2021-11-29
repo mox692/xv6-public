@@ -88,10 +88,12 @@ allocproc(void)
 
 found:
   p->state = EMBRYO;
+  // MEMO: pid は単純に1ずつ増やしていくだけ.
   p->pid = nextpid++;
 
   release(&ptable.lock);
 
+  // MEMO: なんでここでkernelのstackが出てくる？
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
     p->state = UNUSED;
@@ -132,12 +134,15 @@ userinit(void)
   inituvm(p->pgdir, _binary_initcode_start, (int)_binary_initcode_size);
   p->sz = PGSIZE;
   memset(p->tf, 0, sizeof(*p->tf));
+  // TODO: ここのrefが見つからない...
   p->tf->cs = (SEG_UCODE << 3) | DPL_USER;
   p->tf->ds = (SEG_UDATA << 3) | DPL_USER;
   p->tf->es = p->tf->ds;
   p->tf->ss = p->tf->ds;
   p->tf->eflags = FL_IF;
   p->tf->esp = PGSIZE;
+  // MEMO: これでなぜinitcodeに飛んだことになるのか？
+  //       -> makefileのinitcodeの部分で、addr0でinitcode.cをlinkしてた
   p->tf->eip = 0;  // beginning of initcode.S
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
