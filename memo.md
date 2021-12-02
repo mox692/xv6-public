@@ -61,12 +61,27 @@
   * initでlockをとりあえずとるだけ、みたいなのが多いけど、これは何？
   * spinlock.cのaquire , releaeseも関係してるのかも.
 
+* 12/2
+  * user processの起動の流れを見る 
+    * tvinitでidtに割り込みが登録される
+      * ここでsyscallは64ってのが決められてる
+    * idtinitで割り込みが入るようになる
+
+    * inituvmでinitCodeをpageの先頭に置いている
+      * その他細かいpageのmapなどもしてる.
+    * proc.cでeipを0に設定している
+    * makefileでinitcode.Sが0番地からstartするとして定義されている
+
+  * 起動の流れはちょっとイメージできた
+  * 次はscehdulingの部分をみたい。
+    * なんやかんやここを理解するのに、過去のコードに戻りそう.
 
 ### 参考文献
 * boot, pagingの設定(main.cのはじめあたり)
   * https://yohei.codes/ja/post/xv6-memory-2/
   * 
-
+* init processの流れ
+  * https://speakerdeck.com/toasa/xv6-initpurosesu-kotohazime
 ### 起動
 * make -> make qemu
 * 停止は

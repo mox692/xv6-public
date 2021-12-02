@@ -11,8 +11,10 @@ start:
   pushl $argv
   pushl $init
   pushl $0  // where caller pc would be
+  # ここは、引数を渡している？
   movl $SYS_exec, %eax
   # trap.h, trap.c(idtのsyscallのエントリをセットしてる.) を参照.
+  # ここでソフトウェア割り込みを発生させ、T_SYSCALL(64)で定義されている割り込みを発生させる
   int $T_SYSCALL
 
 # for(;;) exit();
