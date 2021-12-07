@@ -50,6 +50,9 @@
     * vectors.Sはvectors.plから生成されてて、これはtrapasm.Sのalltrapsを読んでいる
     * alltrapsはtrap()を呼ぶ
     * trap.cは各割り込みの種類に応じて、処理を行う.
+    * まとめ:
+      * interrupt or syscallが発生.この割り込み時、idtエントリの情報も保持してる.この処理はハードウェア的に処理される
+      * tvinit()で設定した関数へ飛ぶ
   * 残る疑問
     * trapから帰ってくる時の処理は？
       * syscall()してから、戻ってくる処理がパッとみ見当たらない
@@ -75,6 +78,21 @@
   * 起動の流れはちょっとイメージできた
   * 次はscehdulingの部分をみたい。
     * なんやかんやここを理解するのに、過去のコードに戻りそう.
+
+* 12/7
+  * elfのi386上で実行してるみたいだけど、ldだけのoptionでi386のバイラリができるものなの？
+  * コンパイラにもoptionを付けないといけないと思ってた.
+  * ここ(https://www.utam0k.jp/blog/2019/12/20/xv6_scheduling_1/)を読みつつ、schedの大枠理解に努めた
+    * タイマー割り込みをトリガとして
+      * old -> sched -> new
+    * の順番に処理が写っていくみたい 
+    * : timer割り込みの機構をみたい.(timer割り込みなんて設定してた?)
+      * -> trap.cのtrap()で、trapのハンドラを定義していた
+      * ついでにinterruotの復讐もした
+    * TODO : timer
+  * cpuごとにscheduler()が呼ばれてるみたいだけど、各cpuが協調してscheduler()を呼ぶ仕組みは、xz6では書いてない？
+  * https://qiita.com/knknkn1162/items/0bc9afc3ae304590e16c#mpmain%E3%81%AEscheduler 神記事を道桁
+  * 次はinit.c, fork関数とexec関数辺りを読む
 
 ### 参考文献
 * boot, pagingの設定(main.cのはじめあたり)

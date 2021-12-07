@@ -107,6 +107,7 @@ found:
 
   // Set up new context to start executing at forkret,
   // which returns to trapret.
+  // TODO: なんか、ここでprocessに細工してる!???
   sp -= 4;
   *(uint*)sp = (uint)trapret;
 
@@ -357,7 +358,6 @@ scheduler(void)
       c->proc = 0;
     }
     release(&ptable.lock);
-
   }
 }
 

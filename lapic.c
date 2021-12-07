@@ -36,6 +36,7 @@
 #define ICRHI   (0x0310/4)   // Interrupt Command [63:32]
 #define TIMER   (0x0320/4)   // Local Vector Table 0 (TIMER)
   #define X1         0x0000000B   // divide counts by 1 MEMO: ここっぽい！ https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol3/o_fe12b1e2a880e0ce-378.html ??
+  #define X2         0x00000002   // 自作. 一番遅い周期
   #define PERIODIC   0x00020000   // Periodic
 #define PCINT   (0x0340/4)   // Performance Counter LVT
 #define LINT0   (0x0350/4)   // Local Vector Table 1 (LINT0)
@@ -66,11 +67,12 @@ lapicinit(void)
   // Enable local APIC; set spurious interrupt vector.
   lapicw(SVR, ENABLE | (T_IRQ0 + IRQ_SPURIOUS));
 
+  // MEMO: ここのtimerは、procのschedulingで使用される.
   // The timer repeatedly counts down at bus frequency
   // from lapic[TICR] and then issues an interrupt.
   // If xv6 cared more about precise timekeeping,
   // TICR would be calibrated using an external time source.
-  lapicw(TDCR, X1);
+  lapicw(TDCR, X2);
   // ref: https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol3/o_fe12b1e2a880e0ce-375.html
   //  Local Vector Table 0(timer)を定期動作させるように定義
   lapicw(TIMER, PERIODIC | (T_IRQ0 + IRQ_TIMER));

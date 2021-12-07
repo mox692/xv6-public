@@ -1,6 +1,8 @@
 // Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID
+  // MEMO: scheduler自身もprocess.
+  // TODO: この、schedulerというprocessをinitしてるのはどこだろう？
   struct context *scheduler;   // swtch() here to enter scheduler
   struct taskstate ts;         // Used by x86 to find stack for interrupt
   struct segdesc gdt[NSEGS];   // x86 global descriptor table

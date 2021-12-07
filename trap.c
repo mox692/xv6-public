@@ -37,6 +37,7 @@ idtinit(void)
 
 //PAGEBREAK: 41
 // MEMO: syscallのtrap、そのほかの例外も、割り込み系は全て一旦ここに処理が飛んでくる.
+// 各caseの中がtrapハンドラに相当するイメージかな
 void
 trap(struct trapframe *tf)
 {
