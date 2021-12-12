@@ -656,6 +656,7 @@ namex(char *path, int nameiparent, char *name)
   return ip;
 }
 
+// MEMO: ファイル名からinodeを引っ張ってくる系の関数
 struct inode*
 namei(char *path)
 {

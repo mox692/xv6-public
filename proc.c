@@ -276,6 +276,7 @@ exit(void)
 
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
+// MEMO: 
 int
 wait(void)
 {
@@ -289,6 +290,7 @@ wait(void)
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->parent != curproc)
+        // 子プロセス出なければ、loopをcontinue
         continue;
       havekids = 1;
       if(p->state == ZOMBIE){
@@ -350,6 +352,7 @@ scheduler(void)
       switchuvm(p);
       p->state = RUNNING;
 
+      // MEMO: 初めての時は、ここでinit processが走る
       swtch(&(c->scheduler), p->context);
       switchkvm();
 

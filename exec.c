@@ -7,6 +7,8 @@
 #include "x86.h"
 #include "elf.h"
 
+// MEMO: ファイル名からinodeを持ってきて、それをreadi()して
+// memory上に展開して実行する
 int
 exec(char *path, char **argv)
 {

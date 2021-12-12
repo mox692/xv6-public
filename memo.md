@@ -41,7 +41,6 @@
 * 11/25
   * uartがむずすぎる
     * というか前提知識がなさすぎて
-    * 
 
 * 11/28
   * userinitでuser procが生成される処理をみて行った.
@@ -93,6 +92,19 @@
   * cpuごとにscheduler()が呼ばれてるみたいだけど、各cpuが協調してscheduler()を呼ぶ仕組みは、xz6では書いてない？
   * https://qiita.com/knknkn1162/items/0bc9afc3ae304590e16c#mpmain%E3%81%AEscheduler 神記事を道桁
   * 次はinit.c, fork関数とexec関数辺りを読む
+
+* 12/12
+  * execを少し読んだ。
+    * userランドのコードは多少読みやすい
+    * ざっくりとした流れはわかるけど、細かいのはちゃんと読んでない
+  * schedule周り
+    * さしあたり、暫定的に以下の結論で。
+      1. userinit()でinitcode.Sをprocessの開始地点とする
+      2. scheduler()のswtch()で実際にinitcodeのprocessへ飛ぶ
+      3. ~ process実行される ~
+      4. timer割り込みがはいる！！
+      5. trapハンドラである、trap.cのtrap()のyield();の中の  sched();でschedulerに戻す.
+      6. 2に戻る
 
 ### 参考文献
 * boot, pagingの設定(main.cのはじめあたり)

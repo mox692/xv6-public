@@ -7,6 +7,7 @@
 
 char *argv[] = { "sh", 0 };
 
+// TODO: これがどこから呼ばれるか
 int
 main(void)
 {
@@ -27,6 +28,7 @@ main(void)
       exit();
     }
     if(pid == 0){
+      // MEMO: 子process
       exec("sh", argv);
       printf(1, "init: exec sh failed\n");
       exit();
