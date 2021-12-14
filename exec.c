@@ -8,7 +8,7 @@
 #include "elf.h"
 
 // MEMO: ファイル名からinodeを持ってきて、それをreadi()して
-// memory上に展開して実行する
+// memory上に展開して実行する. Loader的な動きをする.
 int
 exec(char *path, char **argv)
 {

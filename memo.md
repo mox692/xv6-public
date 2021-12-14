@@ -106,6 +106,12 @@
       5. trapハンドラである、trap.cのtrap()のyield();の中の  sched();でschedulerに戻す.
       6. 2に戻る
 
+* 12/14
+  * sh.cを読んで、shが他のprocessを起動する流れを見る
+    * ここまで読んだら、一旦いい感じカナー。
+  * sh.cを読む
+    * fdが3つあることを、はじめのwhile loopで確認してる.
+    * getcmdでcommandを受け付けてる
 ### 参考文献
 * boot, pagingの設定(main.cのはじめあたり)
   * https://yohei.codes/ja/post/xv6-memory-2/

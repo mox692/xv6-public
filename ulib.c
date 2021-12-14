@@ -56,6 +56,7 @@ gets(char *buf, int max)
   char c;
 
   for(i=0; i+1 < max; ){
+    // MEMO: 第一引数 fd = 0は標準入力
     cc = read(0, &c, 1);
     if(cc < 1)
       break;

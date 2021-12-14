@@ -28,7 +28,7 @@ main(void)
       exit();
     }
     if(pid == 0){
-      // MEMO: 子process
+      // MEMO: ここのpathは子processがとおる
       exec("sh", argv);
       printf(1, "init: exec sh failed\n");
       exit();

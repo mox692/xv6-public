@@ -54,6 +54,7 @@ void panic(char*);
 struct cmd *parsecmd(char*);
 
 // Execute cmd.  Never returns.
+// 
 void
 runcmd(struct cmd *cmd)
 {
@@ -69,13 +70,14 @@ runcmd(struct cmd *cmd)
 
   switch(cmd->type){
   default:
-    panic("runcmd");
+    panic("unsupported cmd Type.");
 
   case EXEC:
     ecmd = (struct execcmd*)cmd;
     if(ecmd->argv[0] == 0)
       exit();
     exec(ecmd->argv[0], ecmd->argv);
+    // MEMO: execは通常は返らない.
     printf(2, "exec %s failed\n", ecmd->argv[0]);
     break;
 
@@ -124,7 +126,7 @@ runcmd(struct cmd *cmd)
   case BACK:
     bcmd = (struct backcmd*)cmd;
     if(fork1() == 0)
-      runcmd(bcmd->cmd);
+      (bcmd->cmd);
     break;
   }
   exit();
@@ -148,6 +150,7 @@ main(void)
   int fd;
 
   // Ensure that three file descriptors are open.
+  // MEMO: consoleをopenして帰って来たdiscが3より大きければ、discは3以上
   while((fd = open("console", O_RDWR)) >= 0){
     if(fd >= 3){
       close(fd);
@@ -161,6 +164,7 @@ main(void)
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
       if(chdir(buf+3) < 0)
+        // MEMO: この辺の出力がエラー出力に出されてるのが気になる.
         printf(2, "cannot cd %s\n", buf+3);
       continue;
     }

@@ -1,3 +1,5 @@
+# MEMO: ここのasmの挙動: https://stackoverflow.com/questions/32713854/xv6-usys-s-what-does-this-code-it-do
+
 #include "syscall.h"
 #include "traps.h"
 
