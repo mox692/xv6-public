@@ -71,6 +71,9 @@ waitdisk(void)
 }
 
 // Read a single sector at offset into dst.
+//
+// Ref
+// PIO: https://wiki.osdev.org/ATA_PIO_Mode#Hardware
 void
 readsect(void *dst, uint offset)
 {

@@ -101,6 +101,8 @@ xv6.img: bootblock kernel
 xv6memfs.img: bootblock kernelmemfs
 	dd if=/dev/zero of=xv6memfs.img count=10000
 	dd if=bootblock of=xv6memfs.img conv=notrunc
+# MEMO:   seek=N          skip N obs-sized blocks at start of output
+# これで先頭512byteの次のsectorにkernelを置いてる事になる.
 	dd if=kernelmemfs of=xv6memfs.img seek=1 conv=notrunc
 
 # MEMO: bootblock = boot loader??

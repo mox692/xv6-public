@@ -126,7 +126,7 @@ runcmd(struct cmd *cmd)
   case BACK:
     bcmd = (struct backcmd*)cmd;
     if(fork1() == 0)
-      (bcmd->cmd);
+      runcmd(bcmd->cmd);
     break;
   }
   exit();
